@@ -1,0 +1,1141 @@
+---
+layout: default
+title: ETHOS — Electro-THermal mOdel for State Estimation
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ETHOS — Electro-THermal mOdel for State Estimation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050a0e;
+      --bg2: #0b1520;
+      --surface: #0f1e2d;
+      --border: #1a3040;
+      --accent: #00e5ff;
+      --accent2: #ff6b35;
+      --accent3: #7fff6e;
+      --text: #cde8f0;
+      --text-dim: #5a8a9f;
+      --mono: 'Space Mono', monospace;
+      --display: 'Bebas Neue', sans-serif;
+      --body: 'DM Sans', sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── GRID OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      background: rgba(5,10,14,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--display);
+      font-size: 1.8rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, rgba(0,229,255,0.08) 0%, transparent 70%);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%,-50%) scale(1); opacity: 0.7; }
+      50% { transform: translate(-50%,-50%) scale(1.12); opacity: 1; }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0,229,255,0.3);
+      padding: 0.35rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      animation: fadeInDown 0.8s ease both;
+    }
+
+    .hero h1 {
+      font-family: var(--display);
+      font-size: clamp(5rem, 14vw, 11rem);
+      line-height: 0.9;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, #ffffff 0%, var(--accent) 50%, #7fd8e8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+      animation: fadeInUp 0.9s ease 0.1s both;
+    }
+
+    .hero-subtitle {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      margin-bottom: 2rem;
+      animation: fadeInUp 0.9s ease 0.2s both;
+    }
+
+    .hero-desc {
+      max-width: 580px;
+      font-size: 1.05rem;
+      color: var(--text);
+      opacity: 0.8;
+      margin-bottom: 3rem;
+      animation: fadeInUp 0.9s ease 0.3s both;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.9s ease 0.4s both;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: var(--display);
+      font-size: 2.5rem;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      color: var(--text-dim);
+      animation: fadeInUp 1s ease 0.8s both;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollLine 1.5s ease-in-out infinite;
+    }
+
+    @keyframes scrollLine {
+      0% { opacity: 0; transform: scaleY(0); transform-origin: top; }
+      50% { opacity: 1; transform: scaleY(1); transform-origin: top; }
+      100% { opacity: 0; transform: scaleY(1); transform-origin: bottom; }
+    }
+
+    /* ── SECTIONS ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 6rem 2rem;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      letter-spacing: 0.06em;
+      line-height: 1;
+      color: #fff;
+      margin-bottom: 2.5rem;
+    }
+
+    /* ── MOTIVATION ── */
+    #overview {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .overview-text p {
+      color: var(--text);
+      opacity: 0.8;
+      margin-bottom: 1.25rem;
+      font-size: 1.02rem;
+    }
+
+    .gap-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent2);
+      padding: 1.5rem;
+      border-radius: 4px;
+      margin-top: 1.5rem;
+    }
+
+    .gap-card h4 {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.75rem;
+    }
+
+    .gap-card p { font-size: 0.95rem; opacity: 0.8; }
+
+    .problems-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .problem-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: border-color 0.2s;
+    }
+
+    .problem-item:hover { border-color: var(--accent); }
+
+    .problem-num {
+      font-family: var(--display);
+      font-size: 2rem;
+      color: var(--border);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .problem-text {
+      font-size: 0.92rem;
+      color: var(--text);
+      opacity: 0.75;
+    }
+
+    /* ── ARCHITECTURE ── */
+    #architecture { background: var(--bg); }
+
+    .arch-pipeline {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin: 3rem 0;
+      overflow-x: auto;
+    }
+
+    .arch-stage {
+      flex: 1;
+      min-width: 220px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      position: relative;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .arch-stage:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      z-index: 2;
+    }
+
+    .arch-stage:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.5rem;
+      color: var(--accent);
+      z-index: 3;
+      font-family: var(--mono);
+    }
+
+    .stage-num {
+      font-family: var(--mono);
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 0.5rem;
+    }
+
+    .stage-name {
+      font-family: var(--display);
+      font-size: 1.6rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .stage-inputs, .stage-output {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    .stage-output {
+      color: var(--accent3);
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .stage-1 { border-top: 3px solid #7fff6e; }
+    .stage-2 { border-top: 3px solid #00e5ff; }
+    .stage-3 { border-top: 3px solid #ff6b35; }
+
+    .inductive-bias {
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      padding: 1.5rem;
+      border: 1px dashed var(--border);
+      border-radius: 4px;
+    }
+
+    .inductive-bias span { color: var(--accent); }
+
+    /* ── RESULTS ── */
+    #results { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .results-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 1rem;
+    }
+
+    .tab-btn {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.5rem 1.25rem;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      border-radius: 4px;
+      text-align: center;
+    }
+
+    .metric-val {
+      font-family: var(--display);
+      font-size: 3rem;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+
+    .metric-val.good { color: var(--accent3); }
+    .metric-val.warn { color: var(--accent); }
+
+    .metric-name {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 0.5rem;
+    }
+
+    .metric-sub {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      margin-top: 0.25rem;
+    }
+
+    .perf-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+    }
+
+    .perf-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--accent);
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      font-weight: 700;
+    }
+
+    .perf-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+      opacity: 0.8;
+    }
+
+    .perf-table tr:hover td { background: rgba(0,229,255,0.04); }
+
+    .best-row td { color: var(--accent3) !important; opacity: 1 !important; }
+
+    /* ── DATASET ── */
+    #dataset { background: var(--bg); }
+
+    .dataset-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .dataset-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .dataset-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ds-icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .ds-icon.calce { background: rgba(0,229,255,0.15); }
+    .ds-icon.lab { background: rgba(255,107,53,0.15); }
+
+    .ds-name {
+      font-family: var(--display);
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+    }
+
+    .ds-sub {
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    .ds-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .ds-table tr:not(:last-child) td {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .ds-table td {
+      padding: 0.75rem 1.5rem;
+      font-size: 0.85rem;
+    }
+
+    .ds-table td:first-child {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      width: 45%;
+    }
+
+    .ds-table td:last-child { color: var(--text); }
+
+    /* ── HYPERPARAMS ── */
+    #hyperparams { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .hp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .hp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+    }
+
+    .hp-title {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .hp-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      font-size: 0.85rem;
+      border-bottom: 1px solid rgba(26,48,64,0.5);
+    }
+
+    .hp-row:last-child { border-bottom: none; }
+
+    .hp-row-val {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+    }
+
+    .hp-row-val.best { color: var(--accent3); }
+
+    /* ── TEAM ── */
+    #team { background: var(--bg); text-align: center; }
+
+    .team-grid {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .team-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      border-radius: 4px;
+      width: 240px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .team-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+    }
+
+    .team-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #0050ff);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--display);
+      font-size: 2rem;
+      color: #000;
+      margin: 0 auto 1.25rem;
+    }
+
+    .team-avatar.b { background: linear-gradient(135deg, var(--accent2), #ff0090); }
+
+    .team-name {
+      font-family: var(--display);
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .team-roll {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    .footer-logo {
+      font-family: var(--display);
+      font-size: 3rem;
+      letter-spacing: 0.12em;
+      background: linear-gradient(135deg, var(--accent), #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    footer p {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .overview-grid, .dataset-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .arch-pipeline { flex-direction: column; }
+      .arch-stage:not(:last-child)::after { content: '↓'; right: auto; left: 50%; top: auto; bottom: -1rem; transform: translateX(-50%); }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">ETHOS</a>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#results">Results</a></li>
+    <li><a href="#dataset">Dataset</a></li>
+    <li><a href="#team">Team</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-badge">ATET End-Semester Project · 2024</div>
+  <h1>ETHOS</h1>
+  <p class="hero-subtitle">Electro-THermal mOdel for State estimation</p>
+  <p class="hero-desc">
+    A three-stage cascaded LSTM framework that closes the electro-thermal feedback loop in Li-ion battery management—co-estimating SOC and surface temperature without auxiliary thermal sensors.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-val">0.9996</div>
+      <div class="stat-label">R² (LFP SOC)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">88 MB</div>
+      <div class="stat-label">GPU Footprint</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">3</div>
+      <div class="stat-label">Cascade Stages</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">2</div>
+      <div class="stat-label">Chemistries</div>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    SCROLL
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="container">
+    <div class="overview-grid reveal">
+      <div class="overview-text">
+        <p class="section-label">// 01 — Motivation</p>
+        <h2 class="section-title">The Open Loop Problem</h2>
+        <p>Current BMS architectures treat SOC and surface temperature as <em>decoupled</em> estimates, ignoring the non-linear electro-thermal feedback that governs Li-ion cell performance.</p>
+        <p>When thermal-electrochemical coupling goes unmodeled, thermal runaway risk increases substantially. Prior data-driven approaches either treat temperature as a measured input or require auxiliary sensors.</p>
+        <div class="gap-card">
+          <h4>⚡ Research Gap</h4>
+          <p>The electro-thermal feedback loop remains open. ETHOS closes it with a sensor-free, physics-ordered cascade.</p>
+        </div>
+      </div>
+      <div class="problems-list">
+        <div class="problem-item">
+          <div class="problem-num">01</div>
+          <div class="problem-text">SOC and temperature treated as decoupled estimates in conventional BMS</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-num">02</div>
+          <div class="problem-text">Non-linear electro-thermal feedback ignored, raising thermal runaway risk</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-num">03</div>
+          <div class="problem-text">Existing models require auxiliary temperature sensor or treat T as a given input</div>
+        </div>
+        <div class="problem-item">
+          <div class="problem-num">04</div>
+          <div class="problem-text">No prior work enforces physics-consistent ordering: I → V → T → SOC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section id="architecture">
+  <div class="container">
+    <p class="section-label reveal">// 02 — Architecture</p>
+    <h2 class="section-title reveal">Stage-Gate Pipeline</h2>
+
+    <div class="arch-pipeline reveal">
+      <div class="arch-stage stage-1">
+        <div class="stage-num">Stage 01 / LSTM-1</div>
+        <div class="stage-name">Dynamic Voltage</div>
+        <div class="stage-inputs">
+          <strong>INPUT</strong><br>
+          Current (A)<br>
+          Step Time (s)<br>
+          Resistance (Ω)
+        </div>
+        <div class="stage-output">
+          <strong>OUTPUT</strong><br>
+          Predicted Voltage
+        </div>
+      </div>
+
+      <div class="arch-stage stage-2">
+        <div class="stage-num">Stage 02 / LSTM-2</div>
+        <div class="stage-name">Thermal State</div>
+        <div class="stage-inputs">
+          <strong>INPUT</strong><br>
+          Current (A)<br>
+          Voltage (V) ← Stage 1<br>
+          Step Time (s)<br>
+          Resistance (Ω)
+        </div>
+        <div class="stage-output">
+          <strong>OUTPUT</strong><br>
+          Predicted Temperature
+        </div>
+      </div>
+
+      <div class="arch-stage stage-3">
+        <div class="stage-num">Stage 03 / LSTM-3</div>
+        <div class="stage-name">SOC Co-Est.</div>
+        <div class="stage-inputs">
+          <strong>INPUT</strong><br>
+          Current (A)<br>
+          Voltage ← Stage 1<br>
+          Temp ← Stage 2<br>
+          Resistance (Ω)
+        </div>
+        <div class="stage-output">
+          <strong>OUTPUT</strong><br>
+          Predicted SOC
+        </div>
+      </div>
+    </div>
+
+    <div class="inductive-bias reveal">
+      Inductive bias enforced: &nbsp;
+      <span>Current</span> → <span>Voltage</span> → <span>Temperature</span> → <span>SOC</span>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results">
+  <div class="container">
+    <p class="section-label reveal">// 03 — Results</p>
+    <h2 class="section-title reveal">Performance Metrics</h2>
+
+    <div class="results-tabs reveal">
+      <button class="tab-btn active" onclick="switchTab('baseline')">Baseline Comparison</button>
+      <button class="tab-btn" onclick="switchTab('lfp')">LFP Cascade</button>
+      <button class="tab-btn" onclick="switchTab('nmc')">NMC Cascade</button>
+      <button class="tab-btn" onclick="switchTab('transfer')">Few-Shot Transfer</button>
+    </div>
+
+    <!-- Baseline -->
+    <div id="tab-baseline" class="tab-content active reveal">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-val good">0.9996</div>
+          <div class="metric-name">Best R² (LSTM)</div>
+          <div class="metric-sub">SOC Prediction</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val good">0.045</div>
+          <div class="metric-name">Best RMSE (LSTM)</div>
+          <div class="metric-sub">Ah</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val warn">88 MB</div>
+          <div class="metric-name">GPU Memory</div>
+          <div class="metric-sub">Lowest of all models</div>
+        </div>
+      </div>
+      <table class="perf-table">
+        <thead>
+          <tr><th>Model</th><th>RMSE (Ah)</th><th>MAE (Ah)</th><th>R²</th><th>GPU (MB)</th><th>Time (s)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>RNN</td><td>0.392</td><td>0.038</td><td>0.500</td><td>110</td><td>—</td></tr>
+          <tr><td>Transformer</td><td>0.134</td><td>0.001</td><td>0.983</td><td>110</td><td>1894.83</td></tr>
+          <tr><td>MLP</td><td>0.122</td><td>0.0004</td><td>0.993</td><td>110</td><td>787.51</td></tr>
+          <tr><td>CNN</td><td>0.100</td><td>0.0002</td><td>0.996</td><td>110</td><td>836.94</td></tr>
+          <tr class="best-row"><td>★ LSTM</td><td>0.045</td><td>0.00002</td><td>0.9996</td><td>88</td><td>834.01</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LFP Cascade -->
+    <div id="tab-lfp" class="tab-content reveal">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-val good">0.9993</div><div class="metric-name">SOC R²</div><div class="metric-sub">Stage 3</div></div>
+        <div class="metric-card"><div class="metric-val good">0.9999</div><div class="metric-name">Temp R²</div><div class="metric-sub">Stage 2</div></div>
+        <div class="metric-card"><div class="metric-val warn">±0.041</div><div class="metric-name">95% CI SOC</div><div class="metric-sub">Tight confidence band</div></div>
+      </div>
+      <table class="perf-table">
+        <thead><tr><th>Stage</th><th>Target</th><th>RMSE (Ah)</th><th>MAE (Ah)</th><th>R²</th></tr></thead>
+        <tbody>
+          <tr><td>Stage 1</td><td>Voltage</td><td>0.071</td><td>0.00003</td><td>0.9993</td></tr>
+          <tr><td>Stage 2</td><td>Temperature</td><td>0.281</td><td>0.011</td><td>0.9999</td></tr>
+          <tr class="best-row"><td>Stage 3</td><td>SOC</td><td>0.055</td><td>0.00005</td><td>0.9993</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- NMC Cascade -->
+    <div id="tab-nmc" class="tab-content reveal">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-val warn">0.9533</div><div class="metric-name">SOC R²</div><div class="metric-sub">Stage 3 — NMC</div></div>
+        <div class="metric-card"><div class="metric-val good">0.9999</div><div class="metric-name">Temp R²</div><div class="metric-sub">Stage 2 — NMC</div></div>
+        <div class="metric-card"><div class="metric-val warn">±0.284</div><div class="metric-name">95% CI SOC</div><div class="metric-sub">Wider — flat OCV zone</div></div>
+      </div>
+      <table class="perf-table">
+        <thead><tr><th>Stage</th><th>Target</th><th>RMSE (Ah)</th><th>MAE (Ah)</th><th>R²</th></tr></thead>
+        <tbody>
+          <tr><td>Stage 1</td><td>Voltage</td><td>0.126</td><td>0.0004</td><td>0.9926</td></tr>
+          <tr><td>Stage 2</td><td>Temperature</td><td>0.375</td><td>0.0309</td><td>0.9999</td></tr>
+          <tr><td>Stage 3</td><td>SOC</td><td>0.321</td><td>0.0167</td><td>0.9533</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Transfer -->
+    <div id="tab-transfer" class="tab-content reveal">
+      <div class="metrics-grid">
+        <div class="metric-card"><div class="metric-val good">0.8981</div><div class="metric-name">Transfer R²</div><div class="metric-sub">Lab dataset</div></div>
+        <div class="metric-card"><div class="metric-val warn">0.0417</div><div class="metric-name">Transfer MAE</div><div class="metric-sub">Ah</div></div>
+        <div class="metric-card"><div class="metric-val good">20%</div><div class="metric-name">Adaptation Data</div><div class="metric-sub">Only 20% needed</div></div>
+      </div>
+      <p style="font-size:0.9rem; color:var(--text-dim); margin-top:1rem;">
+        Adapted to the Dynamic Load (SPEL Lab) dataset using only 20% adaptation data. The model generalises to an unseen test rig with LG INR18650MH1 (NMC, 3.1 Ah) running a Hybrid FTP-75 + CCCV + Pulse profile.
+      </p>
+      <table class="perf-table" style="margin-top:1.5rem;">
+        <thead><tr><th>Train → Test</th><th>MAE (Ah)</th><th>RMSE (Ah)</th></tr></thead>
+        <tbody>
+          <tr><td>70% LFP + 30% NMC → NMC</td><td>0.7596</td><td>0.923</td></tr>
+          <tr class="best-row"><td>70% NMC + 30% LFP → LFP</td><td>0.3557</td><td>1.04</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.82rem; color:var(--text-dim); margin-top:1rem; font-family:var(--mono);">
+        NMC → LFP transfer outperforms LFP → NMC because NMC has a richer OCV profile, producing stronger learned representations.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- DATASET -->
+<section id="dataset">
+  <div class="container">
+    <p class="section-label reveal">// 04 — Data</p>
+    <h2 class="section-title reveal">Datasets Used</h2>
+    <div class="dataset-grid reveal">
+      <div class="dataset-card">
+        <div class="dataset-header">
+          <div class="ds-icon calce">🔋</div>
+          <div>
+            <div class="ds-name">CALCE Dataset</div>
+            <div class="ds-sub">University of Maryland</div>
+          </div>
+        </div>
+        <table class="ds-table">
+          <tr><td>Institution</td><td>CALCE, University of Maryland</td></tr>
+          <tr><td>Chemistries</td><td>NMC (INR18650-20R), LFP (A123)</td></tr>
+          <tr><td>Profiles</td><td>DST, FUDS, US06</td></tr>
+          <tr><td>Voltage (NMC)</td><td>4.2 V / 2.5 V</td></tr>
+          <tr><td>Voltage (LFP)</td><td>3.6 V / 2.0 V</td></tr>
+          <tr><td>Signals</td><td>V, I, T_surf, Q_charge, Q_disch</td></tr>
+          <tr><td>Thermal</td><td>Regulated ambient environments</td></tr>
+        </table>
+      </div>
+      <div class="dataset-card">
+        <div class="dataset-header">
+          <div class="ds-icon lab">⚗️</div>
+          <div>
+            <div class="ds-name">SPEL Lab Dataset</div>
+            <div class="ds-sub">In-house validation</div>
+          </div>
+        </div>
+        <table class="ds-table">
+          <tr><td>Cell Model</td><td>LG INR18650MH1 (NMC)</td></tr>
+          <tr><td>Capacity</td><td>3.1 Ah nominal</td></tr>
+          <tr><td>Test Profile</td><td>FTP-75, CCCV, Pulse (hybrid)</td></tr>
+          <tr><td>Sampling Rate</td><td>1 Hz</td></tr>
+          <tr><td>Voltage Limits</td><td>4.2 V upper / 2.5 V lower</td></tr>
+          <tr><td>Current Range</td><td>±10 A</td></tr>
+          <tr><td>Logged Features</td><td>V, I, T (°C), Q (Ah), Energy (Wh)</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HYPERPARAMETERS -->
+<section id="hyperparams">
+  <div class="container">
+    <p class="section-label reveal">// 05 — Tuning</p>
+    <h2 class="section-title reveal">Optimal Hyperparameters</h2>
+    <div class="hp-grid reveal">
+      <div class="hp-card">
+        <div class="hp-title">Epochs</div>
+        <div class="hp-row"><span>2</span><span class="hp-row-val">R²: 0.958</span></div>
+        <div class="hp-row"><span>5</span><span class="hp-row-val">R²: 0.9965</span></div>
+        <div class="hp-row"><span>10 ★</span><span class="hp-row-val best">R²: 0.9993</span></div>
+        <div class="hp-row"><span>20</span><span class="hp-row-val">R²: 0.9994</span></div>
+      </div>
+      <div class="hp-card">
+        <div class="hp-title">Learning Rate</div>
+        <div class="hp-row"><span>1×10⁻²</span><span class="hp-row-val">R²: 0.912</span></div>
+        <div class="hp-row"><span>1×10⁻³ ★</span><span class="hp-row-val best">R²: 0.9993</span></div>
+        <div class="hp-row"><span>1×10⁻⁴</span><span class="hp-row-val">R²: 0.9961</span></div>
+        <div class="hp-row"><span>1×10⁻⁵</span><span class="hp-row-val">R²: 0.978</span></div>
+      </div>
+      <div class="hp-card">
+        <div class="hp-title">Batch Size</div>
+        <div class="hp-row"><span>16</span><span class="hp-row-val">R²: 0.9981</span></div>
+        <div class="hp-row"><span>32</span><span class="hp-row-val">R²: 0.999</span></div>
+        <div class="hp-row"><span>64 ★</span><span class="hp-row-val best">R²: 0.9993</span></div>
+        <div class="hp-row"><span>128</span><span class="hp-row-val">R²: 0.9942</span></div>
+      </div>
+      <div class="hp-card">
+        <div class="hp-title">Sequence Length</div>
+        <div class="hp-row"><span>10</span><span class="hp-row-val">R²: 0.965</span></div>
+        <div class="hp-row"><span>25</span><span class="hp-row-val">R²: 0.9882</span></div>
+        <div class="hp-row"><span>50 ★</span><span class="hp-row-val best">R²: 0.9993</span></div>
+        <div class="hp-row"><span>100</span><span class="hp-row-val">R²: 0.9985</span></div>
+      </div>
+      <div class="hp-card">
+        <div class="hp-title">Hidden Units</div>
+        <div class="hp-row"><span>32</span><span class="hp-row-val">R²: 0.981</span></div>
+        <div class="hp-row"><span>64</span><span class="hp-row-val">R²: 0.9924</span></div>
+        <div class="hp-row"><span>128 ★</span><span class="hp-row-val best">R²: 0.9993</span></div>
+        <div class="hp-row"><span>256</span><span class="hp-row-val">R²: 0.9989</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="container">
+    <p class="section-label reveal">// 06 — Team</p>
+    <h2 class="section-title reveal">Authors</h2>
+    <div class="team-grid reveal">
+      <div class="team-card">
+        <div class="team-avatar">AA</div>
+        <div class="team-name">Aadya Arora</div>
+        <div class="team-roll">Roll No. 22110002</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar b">SP</div>
+        <div class="team-name">Siya Patil</div>
+        <div class="team-roll">Roll No. 22110254</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ETHOS</div>
+  <p>Electro-THermal mOdel for State estimation &nbsp;·&nbsp; ATET End-Semester 2024</p>
+  <p style="margin-top:0.5rem;">Aadya Arora &amp; Siya Patil</p>
+</footer>
+
+<script>
+  // Tab switching
+  function switchTab(id) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
