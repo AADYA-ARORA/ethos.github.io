@@ -1,0 +1,62 @@
+title: "ETHOS"
+description: "Electro-THermal mOdel for State estimation — A cascaded LSTM framework for joint SOC and temperature co-estimation in Li-ion batteries."
+url: ""
+baseurl: ""
+
+# Theme
+remote_theme: jekyll/minima
+# We'll override with custom layout
+
+# Authors
+authors:
+  - name: "Aadya Arora"
+    roll: "22110002"
+  - name: "Siya Patil"
+    roll: "22110254"
+
+# Navigation
+nav_links:
+  - title: "Overview"
+    url: "#overview"
+  - title: "Architecture"
+    url: "#architecture"
+  - title: "Results"
+    url: "#results"
+  - title: "Dataset"
+    url: "#dataset"
+  - title: "Team"
+    url: "#team"
+
+# SEO
+twitter:
+  card: summary_large_image
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Collections
+collections:
+  stages:
+    output: false
+
+# Default front matter
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+
+# Exclude from build
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
